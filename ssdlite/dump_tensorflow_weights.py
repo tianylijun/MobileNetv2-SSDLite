@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import os
 
+class_num = 2
+
 def graph_create(graphpath):
     with tf.gfile.FastGFile(graphpath, 'rb') as graphfile:
         graphdef = tf.GraphDef()
@@ -10,8 +12,9 @@ def graph_create(graphpath):
 
         return tf.import_graph_def(graphdef, name='',return_elements=[])
 
-graph_create("ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb")
-save_dir = ('output')
+graph_create("yiming/frozen_inference_graph.pb")
+save_dir = ('yiming/output2')
+
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
 
@@ -69,9 +72,9 @@ with tf.Session() as sess:
              boxes = 0
              if 'depthwise' not in output_name:
                  if output_name.find('BoxEncodingPredictor') != -1:
-                     boxes = caffe_weights.shape[0] / 4
+                     boxes = caffe_weights.shape[0] // 4
                  elif output_name.find('ClassPredictor') != -1:
-                     boxes = caffe_weights.shape[0] / 91
+                     boxes = caffe_weights.shape[0] // class_num
 
                  if output_name.find('BoxEncodingPredictor') != -1:
                      tmp = caffe_weights.reshape(boxes, 4, -1).copy()
@@ -111,9 +114,9 @@ with tf.Session() as sess:
              boxes = 0
              if 'depthwise' not in output_name:
                  if output_name.find('BoxEncodingPredictor') != -1:
-                     boxes = caffe_bias.shape[0] / 4
+                     boxes = caffe_bias.shape[0] // 4
                  elif output_name.find('ClassPredictor') != -1:
-                     boxes = caffe_bias.shape[0] / 91
+                     boxes = caffe_bias.shape[0] // class_num
                  if output_name.find('BoxEncodingPredictor') != -1:
                      tmp = caffe_bias.reshape(boxes, 4).copy()
                      new_bias = np.zeros(tmp.shape, dtype=np.float32)

@@ -1,13 +1,13 @@
 import numpy as np  
 import sys,os  
-caffe_root = '/home/yaochuanqi/work/ssd/caffe/'
+caffe_root = '/home/leejohnnie/code/chuanqi305/ssd'
 sys.path.insert(0, caffe_root + 'python')  
 import caffe  
 
-deploy_proto = 'deploy.prototxt'  
-save_model = 'deploy.caffemodel'
+deploy_proto = 'yiming/deploy2.prototxt'
+save_model = 'yiming/deploy2.caffemodel'
+weights_dir = 'yiming/output2'
 
-weights_dir = 'output'
 box_layers = ['conv_13/expand', 'Conv_1', 'layer_19_2_2', 'layer_19_2_3', 'layer_19_2_4', 'layer_19_2_5']
 def load_weights(path, shape=None):
     weights = None
@@ -30,9 +30,10 @@ def load_data(net):
                     net.params[key][1].data[...] = load_weights(prefix + '_moving_variance.dat')
                     net.params[key][2].data[...] = np.ones(net.params[key][2].data.shape, dtype=np.float32)
                 elif key.endswith("/scale"):
-                    prefix = weights_dir + '/' + key.replace('scale','bn').replace('/', '_')
-                    net.params[key][0].data[...] = load_weights(prefix + '_gamma.dat')
-                    net.params[key][1].data[...] = load_weights(prefix + '_beta.dat')
+                    #prefix = weights_dir + '/' + key.replace('scale','bn').replace('/', '_')
+                    prefix = weights_dir + '/' + key.replace('scale','').replace('/', '_')
+                    net.params[key][0].data[...] = load_weights(prefix + 'gamma.dat')
+                    net.params[key][1].data[...] = load_weights(prefix + 'beta.dat')
                 else:
                     prefix = weights_dir + '/' + key.replace('/', '_')
                     ws = np.ones((net.params[key][0].data.shape[0], 1, 1, 1), dtype=np.float32)

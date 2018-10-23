@@ -22,7 +22,7 @@ python gen_model.py -s deploy -c 91 >deploy.prototxt
 ```
 python gen_model.py -s train -c CLASS_NUM >train.prototxt
 python gen_model.py -s test -c CLASS_NUM >test.prototxt
-python gen_model.py -s deploy -c CLASS_NUM >deploy.prototxt
+python gen_model.py -s deploy -c CLASS_NUM --relu6 --batchnorm >deploy.prototxt
 ```
 4. Copy coco/solver_train.prototxt and coco/train.sh to your project and start training.
 

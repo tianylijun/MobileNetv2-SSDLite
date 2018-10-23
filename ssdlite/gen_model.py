@@ -433,21 +433,23 @@ layer {
 }""" % bottom)
 
     def conv(self, name, out, kernel, stride=1, group=1, bias=False, bottom=None, ignore_bn='default'):
-      bias = self.nobn
+      #bias = self.nobn
       if ignore_bn != 'default':
           bias = ignore_bn
 
       if bottom is None:
           bottom = self.last
       padstr = ""
-      if kernel > 1:
-          padstr = "\n    pad: %d" % (kernel / 2)
       groupstr = ""
       if group > 1:
           groupstr = "\n    group: %d\n    #engine: CAFFE" % group
       stridestr = ""
       if stride > 1:
-          stridestr = "\n    stride: %d" % stride 
+          stridestr = "\n    stride: %d" % stride
+          padstr = "\n    tf_pad: SAME\n    pad: %d" % (kernel / 2)
+      else:
+          if kernel > 1:
+              padstr = "\n    pad: %d" % (kernel / 2)
       bias_lr_mult = ""
       bias_filler = ""
       if bias == True:
